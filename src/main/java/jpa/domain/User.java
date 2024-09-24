@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
-@NamedQuery(name = "User.findAll", query = "select u from User u")
 public class User {
 
     private long id;

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
-@NamedQuery(name = "QCMAnswer.findAll", query = "select a from QCMAnswer a")
 public class QCMAnswer {
 
     private long id;

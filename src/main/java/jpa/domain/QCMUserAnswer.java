@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -15,7 +16,7 @@ public class QCMUserAnswer extends UserAnswer {
     public QCMUserAnswer() {
     }
 
-    public QCMUserAnswer(QCMAnswer qcmAnswer, Date datetime, boolean isGood, User user) {
+    public QCMUserAnswer(QCMAnswer qcmAnswer, LocalDateTime datetime, boolean isGood, User user) {
         super(datetime, isGood, user);
         this.qcmAnswer = qcmAnswer;
     }

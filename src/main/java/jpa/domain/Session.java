@@ -3,23 +3,24 @@ package jpa.domain;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 @Entity
-@NamedQuery(name = "Session.findAll", query = "select s from Session s")
-@NamedQuery(name = "Session.usersOrderedByScore", query = "select u from User u join u.session s where s.id = :session_id order by u.score DESC")
 public class Session {
 
     private long id;
-    private Date date = new Date();
+    private LocalDateTime date = LocalDateTime.now();
     private Kahoot kahoot;
     private List<User> guests = new ArrayList<>();
 
     public Session() {}
 
-    public Session(Date date, Kahoot kahoot, List<User> guests) {
+    public Session(LocalDateTime date, Kahoot kahoot, List<User> guests) {
         this.date = date;
         this.kahoot = kahoot;
         this.guests = guests;
@@ -35,11 +36,11 @@ public class Session {
         this.id = id;
     }
 
-    public Date getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 

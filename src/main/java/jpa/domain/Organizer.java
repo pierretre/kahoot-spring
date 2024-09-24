@@ -6,7 +6,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.NamedQuery;
 
 @Entity
-@NamedQuery(name = "Organizer.findAll", query = "select o from Organizer o")
 public class Organizer {
 
     private long id;

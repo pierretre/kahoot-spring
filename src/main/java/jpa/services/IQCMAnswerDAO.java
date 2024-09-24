@@ -1,10 +1,10 @@
 package jpa.services;
 
 import jakarta.transaction.Transactional;
-import jpa.domain.UserAnswer;
+import jpa.domain.QCMAnswer;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 @Transactional
-public interface IUserAnswerDAO extends JpaRepository<UserAnswer, Long> {
+public interface IQCMAnswerDAO extends JpaRepository<QCMAnswer, Long> {
 
 }

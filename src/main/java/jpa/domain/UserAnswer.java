@@ -2,23 +2,23 @@ package jpa.domain;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "answer_type")
-@NamedQuery(name = "UserAnswer .findAll", query = "select a from UserAnswer a")
 public class UserAnswer {
 
     private long id;
-    private Date datetime;
+    private LocalDateTime datetime;
     private boolean isGood;
     private User user;
 
     public UserAnswer() {
     }
 
-    public UserAnswer(Date datetime, boolean isGood, User user) {
+    public UserAnswer(LocalDateTime datetime, boolean isGood, User user) {
         this.datetime = datetime;
         this.isGood = isGood;
         this.user = user;
@@ -34,11 +34,11 @@ public class UserAnswer {
         this.id = id;
     }
 
-    public Date getDatetime() {
+    public LocalDateTime getDatetime() {
         return datetime;
     }
 
-    public void setDatetime(Date datetime) {
+    public void setDatetime(LocalDateTime datetime) {
         this.datetime = datetime;
     }
 

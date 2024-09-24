@@ -1,12 +1,11 @@
 package jpa.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
-@NamedQuery(name = "Kahoot.findAll", query = "select k from Kahoot k")
+
 @Entity
 public class Kahoot {
 

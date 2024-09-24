@@ -3,6 +3,7 @@ package jpa.domain;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -12,7 +13,7 @@ private String shortAnswer;
 
     public ShortUserAnswer() {}
 
-    public ShortUserAnswer(String shortAnswer, Date datetime, boolean isGood, User user) {
+    public ShortUserAnswer(String shortAnswer, LocalDateTime datetime, boolean isGood, User user) {
         super(datetime, isGood, user);
         this.shortAnswer = shortAnswer;
     }
