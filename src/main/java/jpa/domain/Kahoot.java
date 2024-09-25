@@ -3,6 +3,7 @@ package jpa.domain;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,7 @@ public class Kahoot {
     private long id;
     private Organizer creator;
     private List<Question> questions = new ArrayList<>();
+    private LocalDateTime creationDate;
 
     public Kahoot() {}
 
@@ -48,5 +50,13 @@ public class Kahoot {
 
     public void setQuestions(List<Question> questions) {
         this.questions = questions;
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
     }
 }
