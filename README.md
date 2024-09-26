@@ -13,3 +13,5 @@
 ### Swagger
 [Link to the swagger](http://localhost:8082/api/swagger)
 
+### Documentation
+https://www.baeldung.com/java-spring-fix-403-error
