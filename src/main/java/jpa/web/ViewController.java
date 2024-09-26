@@ -12,14 +12,13 @@ import org.springframework.web.servlet.ModelAndView;
 public class ViewController {
 
     @GetMapping("/index")
-   // @PreAuthorize("hasRole('USER')")
-    public ModelAndView index( ) {
-
+    @PreAuthorize("hasRole('USER')")
+    public ModelAndView index( JwtAuthenticationToken authentication) {
         ModelAndView modelAndView = new ModelAndView("index");
-        /*authentication.getToken().getClaims().forEach((e,v)-> {
-            System.err.println(e + ' ' +v);
+        authentication.getToken().getClaims().forEach((e, v) -> {
+            System.err.println(e + ' ' + v);
         });
-        modelAndView.addObject("user", authentication);*/
+        modelAndView.addObject("user", authentication);
         return modelAndView;
     }
 
