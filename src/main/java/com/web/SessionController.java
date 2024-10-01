@@ -6,12 +6,14 @@ import com.services.ISessionDAO;
 import com.domain.Session;
 import com.domain.UserAnswer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Component
 @RestController
 public class SessionController {
 
@@ -26,8 +28,8 @@ public class SessionController {
     }
 
     @GetMapping("/session/{id}")
-    public Optional<Session> sessionById(@PathVariable long id) {
-        return sessionDAO.findById(id);
+    public SessionDTO sessionById(@PathVariable long id) {
+        return mapstructMapper.sessionToSessionDTO(sessionDAO.findById(id).orElse(null));
     }
 
     @DeleteMapping("/session/{id}")
