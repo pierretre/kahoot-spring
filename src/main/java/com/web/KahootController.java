@@ -1,17 +1,17 @@
 package com.web;
 
 import com.domain.*;
+import com.dto.KahootDTO;
+import com.mapper.MapStructMapper;
 import com.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class KahootController {
@@ -31,15 +31,22 @@ public class KahootController {
     @Autowired
     private IUserAnswerDAO userAnswerDAO;
 
+    MapStructMapper mapstructMapper = MapStructMapper.INSTANCE;
+
     @GetMapping("/kahoot")
     @ResponseBody
-    public List<Kahoot> kahoot() {
-        return kahootDAO.findAll();
+    public List<KahootDTO> kahoot() {
+        return kahootDAO.findAll().stream().map(k->mapstructMapper.kahootToKahootDTO(k)).collect(Collectors.toList());
     }
 
     @PostMapping("/randomkahoot")
     public String randomKahoot() {
         return this.createKahoots();
+    }
+
+    @GetMapping("/kahoot/{id}")
+    public KahootDTO sessionById(@PathVariable long id) {
+        return mapstructMapper.kahootToKahootDTO(kahootDAO.findById(id).orElse(null));
     }
 
     private String createKahoots() {

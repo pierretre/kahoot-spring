@@ -16,6 +16,7 @@ public interface MapStructMapper {
     OrganizerDTO organizerToOrganizerDTO(Organizer organizer);
     QuestionDTO shortAnswerQuestionToQuestionDTO(ShortAnswerQuestion question);
     QuestionDTO multipleChoiceQuestionToQuestionDTO(MultipleChoiceQuestion question);
+    QuestionDTO questionToQuestionDTO(Question question);
 
     //    Session sessionDTOToSession(SessionDTO sessionDTO);
 //    User userDTOToUser(UserDTO userDTO);
