@@ -1,11 +1,9 @@
 package com.domain;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -33,6 +31,5 @@ public class Session {
     @Getter
     @Setter
     @OneToMany(mappedBy = "session", fetch = FetchType.LAZY)
-    @JsonManagedReference
     private List<User> guests;
 }

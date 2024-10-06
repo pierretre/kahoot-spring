@@ -2,6 +2,7 @@ package com.web;
 
 import com.domain.*;
 import com.dto.KahootDTO;
+import com.exceptions.ResourceNotFoundException;
 import com.mapper.MapStructMapper;
 import com.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,92 +18,97 @@ import java.util.stream.Collectors;
 public class KahootController {
 
     @Autowired
-    private IKahootDAO kahootDAO;
+    private IKahootRepository kahootRepository;
     @Autowired
-    private IQuestionDAO questionDAO;
+    private IQuestionRepository questionRepository;
     @Autowired
-    private IQCMAnswerDAO qcmAnswerDAO;
+    private IQCMAnswerRepository qcmAnswerRepository;
     @Autowired
-    private IOrganizerDAO organizerDAO;
+    private IOrganizerRepository organizerRepository;
     @Autowired
-    private IUserDAO userDAO;
+    private IUserRepository userRepository;
     @Autowired
-    private ISessionDAO sessionDAO;
+    private ISessionRepository sessionRepository;
     @Autowired
-    private IUserAnswerDAO userAnswerDAO;
+    private IUserAnswerRepository userAnswerRepository;
 
     MapStructMapper mapstructMapper = MapStructMapper.INSTANCE;
 
     @GetMapping("/kahoot")
     @ResponseBody
-    public List<KahootDTO> kahoot() {
-        return kahootDAO.findAll().stream().map(k->mapstructMapper.kahootToKahootDTO(k)).collect(Collectors.toList());
+    public List<KahootDTO> all() {
+        return kahootRepository.findAll().stream().map(k -> mapstructMapper.kahootToKahootDTO(k)).collect(Collectors.toList());
     }
 
     @PostMapping("/randomkahoot")
-    public String randomKahoot() {
-        return this.createKahoots();
+    public void randomKahoot() {
+        this.createKahoots();
     }
 
     @GetMapping("/kahoot/{id}")
-    public KahootDTO sessionById(@PathVariable long id) {
-        return mapstructMapper.kahootToKahootDTO(kahootDAO.findById(id).orElse(null));
+    public KahootDTO one(@PathVariable long id) {
+        return mapstructMapper.kahootToKahootDTO(kahootRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(Kahoot.class, id)));
     }
 
-    private String createKahoots() {
+    @DeleteMapping("/kahoot/{id}")
+    void deleteKahoot(@PathVariable long id) {
+        kahootRepository.deleteById(id);
+    }
+
+    private void createKahoots() {
 
         Kahoot kahoot = new Kahoot();
-        kahootDAO.save(kahoot);
+        kahootRepository.save(kahoot);
 
         // Generate the questions :
         Question q1 = new ShortAnswerQuestion("How many legs does a cat have ?", "4", kahoot);
-        questionDAO.save(q1);
+        questionRepository.save(q1);
 
         MultipleChoiceQuestion q2 = new MultipleChoiceQuestion();
-        questionDAO.save(q2);
+        questionRepository.save(q2);
 
         q2.setQuestion("What is the largest country in the world ?");
         MultipleChoiceQuestionAnswer goodAnswer = new MultipleChoiceQuestionAnswer(q2, "Russia");
-        qcmAnswerDAO.save(goodAnswer);
+        qcmAnswerRepository.save(goodAnswer);
         MultipleChoiceQuestionAnswer qa1 = new MultipleChoiceQuestionAnswer(q2, "USA");
-        qcmAnswerDAO.save(qa1);
+        qcmAnswerRepository.save(qa1);
         MultipleChoiceQuestionAnswer qa2 = new MultipleChoiceQuestionAnswer(q2, "Canada");
-        qcmAnswerDAO.save(qa2);
+        qcmAnswerRepository.save(qa2);
         MultipleChoiceQuestionAnswer qa3 = new MultipleChoiceQuestionAnswer(q2, "Brazil");
-        qcmAnswerDAO.save(qa3);
+        qcmAnswerRepository.save(qa3);
         q2.setPossibleAnswers(new ArrayList<>(Arrays.asList(qa1, qa2, qa3, goodAnswer))); // List must be mutable !!
         q2.setGoodAnswer(goodAnswer);
         q2.setKahoot(kahoot);
-        questionDAO.save(q2);
+        questionRepository.save(q2);
 
         kahoot.setQuestions(new ArrayList<>(Arrays.asList(q1, q2)));
 
         // Generate the organizer :
         Organizer creator = new Organizer("bob@mail.com", "bob");
-        organizerDAO.save(creator);
+        organizerRepository.save(creator);
         kahoot.setCreator(creator);
 
         kahoot.setCreationDate(LocalDateTime.now());
 
-        kahootDAO.save(kahoot);
+        kahootRepository.save(kahoot);
 
         // Generate the session :
         Session session = new Session(kahoot, new ArrayList<>());
-        sessionDAO.save(session);
+        sessionRepository.save(session);
 
         // Generate the users :
         User u1 = new User("u1", session);
         User u2 = new User("u2", session);
         User u3 = new User("u3", session);
         User u4 = new User("u4", session);
-        userDAO.save(u1);
-        userDAO.save(u2);
-        userDAO.save(u3);
-        userDAO.save(u4);
+        userRepository.save(u1);
+        userRepository.save(u2);
+        userRepository.save(u3);
+        userRepository.save(u4);
 
         // Update the session :
         session.setGuests(new ArrayList<>(Arrays.asList(u1, u2, u3, u4)));
-        sessionDAO.save(session);
+        sessionRepository.save(session);
 
         // Generate answers :
         ShortUserAnswer sua1 = new ShortUserAnswer("2", false, u1);
@@ -110,31 +116,19 @@ public class KahootController {
         ShortUserAnswer sua3 = new ShortUserAnswer("3", false, u3);
         ShortUserAnswer sua4 = new ShortUserAnswer("4", true, u4);
 
-        userAnswerDAO.save(sua1);
-        userAnswerDAO.save(sua2);
-        userAnswerDAO.save(sua3);
-        userAnswerDAO.save(sua4);
+        userAnswerRepository.save(sua1);
+        userAnswerRepository.save(sua2);
+        userAnswerRepository.save(sua3);
+        userAnswerRepository.save(sua4);
 
         MultipleChoiceUserAnswer qcma1 = new MultipleChoiceUserAnswer(qa1, false, u1);
         MultipleChoiceUserAnswer qcma2 = new MultipleChoiceUserAnswer(goodAnswer, true, u2);
         MultipleChoiceUserAnswer qcma3 = new MultipleChoiceUserAnswer(qa1, false, u3);
         MultipleChoiceUserAnswer qcma4 = new MultipleChoiceUserAnswer(qa3, false, u4);
 
-        userAnswerDAO.save(qcma1);
-        userAnswerDAO.save(qcma2);
-        userAnswerDAO.save(qcma3);
-        userAnswerDAO.save(qcma4);
-
-        List<Session> sessions = sessionDAO.findAll();
-        StringBuilder response = new StringBuilder();
-        response.append("SESSIONS : " + sessions.size()).append("SCORES :");
-
-        List<User> guests = sessionDAO.listUsersScoresForSessionById(session.getId());
-
-        for (User guest : guests) {
-            response.append(" > " + guest.getUsername() + " : " + guest.getScore());
-        }
-
-        return response.toString();
+        userAnswerRepository.save(qcma1);
+        userAnswerRepository.save(qcma2);
+        userAnswerRepository.save(qcma3);
+        userAnswerRepository.save(qcma4);
     }
 }

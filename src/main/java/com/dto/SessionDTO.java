@@ -1,8 +1,9 @@
 package com.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.dto.get.UserGetDTO;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -11,10 +12,11 @@ import java.util.List;
 
 @Getter
 @Setter
+@ToString
 public class SessionDTO implements Serializable {
 
     private long id;
     private LocalDateTime date;
     private KahootDTO kahoot;
-    private List<UserDTO> guests = new ArrayList<>();
+    private List<UserGetDTO> guests = new ArrayList<>();
 }

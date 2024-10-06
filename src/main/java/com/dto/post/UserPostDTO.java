@@ -1,15 +1,14 @@
-package com.dto;
+package com.dto.post;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@Setter
 @Getter
+@Setter
 @ToString
-public class OrganizerDTO {
-
-    private long id;
-    private String email;
+public class UserPostDTO {
     private String username;
+    private Long sessionId;
+    private int score;
 }

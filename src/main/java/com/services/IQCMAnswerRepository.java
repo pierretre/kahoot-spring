@@ -1,10 +1,10 @@
 package com.services;
 
 import jakarta.transaction.Transactional;
-import com.domain.UserAnswer;
+import com.domain.MultipleChoiceQuestionAnswer;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 @Transactional
-public interface IUserAnswerDAO extends JpaRepository<UserAnswer, Long> {
+public interface IQCMAnswerRepository extends JpaRepository<MultipleChoiceQuestionAnswer, Long> {
 
 }

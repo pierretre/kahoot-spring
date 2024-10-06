@@ -18,6 +18,7 @@ public class User {
     @Setter
     private String username;
 
+    @NonNull
     @Getter
     @Setter
     private int score = 0;

@@ -7,6 +7,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class ShortAnswerQuestionDTO extends QuestionDTO {
-    private String expectedResponse;
+public class MultipleChoiceQuestionAnswerDTO {
+    private long id;
+    private String answerText;
 }

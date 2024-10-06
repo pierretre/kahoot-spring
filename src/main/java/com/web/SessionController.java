@@ -1,16 +1,16 @@
 package com.web;
 
-import com.dto.SessionDTO;
-import com.mapper.MapStructMapper;
-import com.services.ISessionDAO;
 import com.domain.Session;
-import com.domain.UserAnswer;
+import com.dto.SessionDTO;
+import com.dto.UserAnswerDTO;
+import com.exceptions.ResourceNotFoundException;
+import com.mapper.MapStructMapper;
+import com.services.ISessionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -18,38 +18,31 @@ import java.util.stream.Collectors;
 public class SessionController {
 
     @Autowired
-    private ISessionDAO sessionDAO;
+    private ISessionRepository sessionRepository;
 
     MapStructMapper mapstructMapper = MapStructMapper.INSTANCE;
 
     @GetMapping("/sessions")
-    public List<SessionDTO> sessions() {
-        return sessionDAO.findAll().stream().map(s->mapstructMapper.sessionToSessionDTO(s)).collect(Collectors.toList());
+    public List<SessionDTO> all() {
+        return sessionRepository.findAll().stream().map(s -> mapstructMapper.sessionToSessionDTO(s)).collect(Collectors.toList());
     }
 
-    @GetMapping("/session/{id}")
-    public SessionDTO sessionById(@PathVariable long id) {
-        return mapstructMapper.sessionToSessionDTO(sessionDAO.findById(id).orElse(null));
+    @GetMapping("/sessions/{id}")
+    public SessionDTO one(@PathVariable long id) {
+        return mapstructMapper.sessionToSessionDTO(sessionRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(Session.class, id)));
     }
 
-    @DeleteMapping("/session/{id}")
+    @DeleteMapping("/sessions/{id}")
     public void deleteSessionById(@PathVariable long id) {
-        sessionDAO.deleteById(id);
+        sessionRepository.deleteById(id);
     }
-
-    /**
-     * Add guest to session : TODO
-     */
-
-    /**
-     * Get session organizer: TODO
-     */
 
     /**
      * Get all user answers associated to this session
      */
-    @GetMapping("/session/{id}/useranswers")
-    public List<UserAnswer> getUserAnswersForSession(@PathVariable int id) {
-        return sessionDAO.getUserAnswersForSessionById(id);
+    @GetMapping("/sessions/{id}/useranswers")
+    public List<UserAnswerDTO> getUserAnswersForSession(@PathVariable int id) {
+        return sessionRepository.getUserAnswersForSessionById(id).stream()
+                .map(ua -> mapstructMapper.userAnswerToUserAnswerDTO(ua)).collect(Collectors.toList());
     }
 }

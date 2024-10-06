@@ -1,52 +1,39 @@
 package com.web;
 
-import com.dto.QuestionDTO;
-import com.mapper.MapStructMapper;
-import com.services.IQuestionDAO;
 import com.domain.Question;
+import com.dto.QuestionDTO;
+import com.exceptions.ResourceNotFoundException;
+import com.mapper.MapStructMapper;
+import com.services.IQuestionRepository;
 import com.domain.MultipleChoiceQuestion;
 import com.domain.ShortAnswerQuestion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
 public class QuestionController {
 
     @Autowired
-    private IQuestionDAO questionDAO;
+    private IQuestionRepository questionRepository;
 
     MapStructMapper mapstructMapper = MapStructMapper.INSTANCE;
 
     @GetMapping("/questions")
-    public List<QuestionDTO> getAllQuestions() {
-        return questionDAO.findAll().stream().map(q->mapstructMapper.questionToQuestionDTO(q)).collect(Collectors.toList());
+    public List<QuestionDTO> all() {
+        return questionRepository.findAll().stream()
+                .map(q->mapstructMapper.questionToQuestionDTO(q)).collect(Collectors.toList());
     }
 
-    @GetMapping("/question/{id}")
-    public QuestionDTO questionById(@PathVariable Long id) {
-        return mapstructMapper.questionToQuestionDTO(questionDAO.findById(id).orElse(null));
+    @GetMapping("/questions/{id}")
+    public QuestionDTO one(@PathVariable Long id) {
+        return mapstructMapper.questionToQuestionDTO(questionRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(Question.class, id)));
     }
 
-    @DeleteMapping("/question/{id}")
+    @DeleteMapping("/questions/{id}")
     public void deleteUser(@PathVariable("id") final Long id) {
-        questionDAO.deleteById(id);
+        questionRepository.deleteById(id);
     }
-
-    @PostMapping("/multiple-choice-question")
-    public void createQuestion(@RequestBody MultipleChoiceQuestion question) {
-        questionDAO.save(question);
-    }
-
-    @PostMapping("/short-answer-question")
-    public void createQuestion(@RequestBody ShortAnswerQuestion question) {
-        questionDAO.save(question);
-    }
-
-
-
-
 }
