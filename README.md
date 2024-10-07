@@ -2,11 +2,30 @@
 
 ## Description
 
-Ce projet est une application Java utilisant JPA (Java Persistence API) pour la gestion des données et JAX-RS (Java API for RESTful Web Services) pour la création d'API REST.
+Ce projet est une application Java Spring-boot utilisant JPA (Java Persistence API) pour la gestion des données et les annotations Spring pour la création d'API REST.
 
-### Fonctionnalités principales :
-- Gestion des entités avec JPA
-- Création d'API RESTful avec JAX-RS
+## Fonctionnalités principales
+
+### 1. Le Swagger API
+[Swagger](http://localhost:8082/api/swagger), permet de visualiser le format des requêtes API.
+
+#### 1.1. API /users
+
+Cette partie de l'API permet de réaliser les méthodes CRUD sur les entités de type **User**.
+
+Il est ainsi possible via l'API de créer, supprimer, mettre à jour et récupérer les données des utilisateurs invités à une **Session**.
+
+Ces fonctionnalités ne nécessitent pas d'être authentifié.
+
+#### 1.2. API /questions
+
+Cette seconde partie de l'API est accessible aux utilisateurs avec le rôle _USER_, et permet de gérer les questions des quizzs (**Kahoot**).
+Il est donc nécessaire pour toute requête vers les endpoints _/questions_ de fournir un token JWT (obtenu précédemment).
+
+### 2. Logging des requêtes HTTP
+
+L'aspect (_AOP_) [ServiceLogger.java](src/main/java/com/aspects/ServiceLogger.java) permet de logger dans la console serveur toutes les requêtes qui sont faites sur les API REST.
+Le logger affiche la requête reçue avec ses paramètres, puis la réponse envoyée sinon l'exception levée.
 
 ## Prérequis
 
@@ -29,15 +48,6 @@ Utilisez Maven pour construire le projet et télécharger les dépendances.
 ```bash
 mvn clean install
 ```
-* Launch the application (com.KahootSpringApplication)
-* Launch the Keycloack docker server :
-    ```shell
-    docker run -p 8080:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:latest start-dev
-    ```
-* Connect to keycloack [admin console](http://localhost:8080/admin/master/console/) with credentials _admin:admin_
-* Import Realm settings from this repository : [realm-export.json](keycloack/realm-export.json) into _Realms settings > Action > Partial import_
-
-
 
 ## Lancer l'application
 
@@ -116,11 +126,6 @@ Une fois l'application démarrée, vous pouvez accéder à votre API via votre n
 
 Vous pouvez également accéder au swagger API (format openapi) : [localhost:8082/api/swagger](http://localhost:8082/api/swagger) ou un outil comme [Postman](https://www.postman.com/). Par exemple :
 
-## Fonctionnalités API
-
-### Le Swagger
-[Swagger](http://localhost:8082/api/swagger), permet de visualiser le format des requêtes API.
-
 ## Structure du projet
 
 ### 1. Diagramme de classes du domaine entités
@@ -182,6 +187,13 @@ src/main/java/
         └── ViewController.java
 ```
 
+### 3. Dépendances
+#### 3.1. MapStruct
+Cette dépendance est utilisée pour la génération du mapper _DTO_ -> _Entity_ et _Entity_ -> _DTO_
+
+#### 3.2. Lombok
+Quoi de plus pénible qu'écrire les getters, les setters, et les méthodes _toString()_... => Lombok
 ## Auteur
 
+#### 
 Pierre TRETON
