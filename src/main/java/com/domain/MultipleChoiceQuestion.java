@@ -1,9 +1,7 @@
 package com.domain;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +14,6 @@ public class MultipleChoiceQuestion extends Question {
     @Getter
     @Setter
     @OneToMany(mappedBy = "question")
-    @JsonManagedReference
     private List<MultipleChoiceQuestionAnswer> possibleAnswers = new ArrayList<>();
 
     @NonNull
@@ -25,7 +22,6 @@ public class MultipleChoiceQuestion extends Question {
     @ManyToOne
     @JoinColumn(name = "good_answer_id")
     private MultipleChoiceQuestionAnswer goodAnswer;
-
 
     public MultipleChoiceQuestion(String question,
                                   List<MultipleChoiceQuestionAnswer> possibleAnswers,

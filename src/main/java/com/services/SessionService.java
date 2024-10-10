@@ -1,12 +1,14 @@
-package com.web;
+package com.services;
 
 import com.domain.*;
-import com.dto.KahootDTO;
+import com.dto.SessionDTO;
+import com.dto.UserAnswerDTO;
+import com.dto.get.UserGetDTO;
 import com.exceptions.ResourceNotFoundException;
 import com.mapper.MapStructMapper;
-import com.services.*;
+import com.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,48 +16,56 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RestController
-public class KahootController {
+@Service
+public class SessionService {
+
+    @Autowired
+    private ISessionRepository sessionRepository;
 
     @Autowired
     private IKahootRepository kahootRepository;
+
     @Autowired
     private IQuestionRepository questionRepository;
-    @Autowired
-    private IQCMAnswerRepository qcmAnswerRepository;
-    @Autowired
-    private IOrganizerRepository organizerRepository;
+
     @Autowired
     private IUserRepository userRepository;
+
     @Autowired
-    private ISessionRepository sessionRepository;
+    private IOrganizerRepository organizerRepository;
+
+    @Autowired
+    private IQCMAnswerRepository qcmAnswerRepository;
+
     @Autowired
     private IUserAnswerRepository userAnswerRepository;
 
+
     MapStructMapper mapstructMapper = MapStructMapper.INSTANCE;
 
-    @GetMapping("/kahoot")
-    @ResponseBody
-    public List<KahootDTO> all() {
-        return kahootRepository.findAll().stream().map(k -> mapstructMapper.kahootToKahootDTO(k)).collect(Collectors.toList());
+    public List<SessionDTO> getAll() {
+        return sessionRepository.findAll().stream().map(s -> mapstructMapper.sessionToSessionDTO(s)).collect(Collectors.toList());
     }
 
-    @PostMapping("/randomkahoot")
-    public void randomKahoot() {
-        this.createKahoots();
+    public SessionDTO get(long id) {
+        return mapstructMapper.sessionToSessionDTO(sessionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(Session.class, id)));
     }
 
-    @GetMapping("/kahoot/{id}")
-    public KahootDTO one(@PathVariable long id) {
-        return mapstructMapper.kahootToKahootDTO(kahootRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(Kahoot.class, id)));
+    public void delete(long id) {
+        sessionRepository.deleteById(id);
     }
 
-    @DeleteMapping("/kahoot/{id}")
-    void deleteKahoot(@PathVariable long id) {
-        kahootRepository.deleteById(id);
+    public List<UserAnswerDTO> getUserAnswers(long id) {
+        return sessionRepository.getUserAnswersForSessionById(id).stream()
+                .map(ua -> mapstructMapper.userAnswerToUserAnswerDTO(ua)).collect(Collectors.toList());
     }
 
-    private void createKahoots() {
+    public List<UserGetDTO> getUsersScores(long id) {
+        return sessionRepository.getUsersOrderedByScoreForSessionById(id).stream()
+                .map(u -> mapstructMapper.userToUserDTO(u)).collect(Collectors.toList());
+    }
+
+    public SessionDTO generateSession() {
 
         Kahoot kahoot = new Kahoot();
         kahootRepository.save(kahoot);
@@ -130,5 +140,7 @@ public class KahootController {
         userAnswerRepository.save(qcma2);
         userAnswerRepository.save(qcma3);
         userAnswerRepository.save(qcma4);
+
+        return mapstructMapper.sessionToSessionDTO(session);
     }
 }

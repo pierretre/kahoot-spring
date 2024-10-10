@@ -1,4 +1,4 @@
-# TP : Application Spring-boot
+# Application Spring-boot
 
 ## Description
 
@@ -9,7 +9,7 @@ Ce projet est une application Java Spring-boot utilisant JPA (Java Persistence A
 ### 1. Le Swagger API
 [Swagger](http://localhost:8082/api/swagger), permet de visualiser le format des requêtes API.
 
-#### 1.1. API /users
+#### 1.1. API /api/users
 
 Cette partie de l'API permet de réaliser les méthodes CRUD sur les entités de type **User**.
 
@@ -17,10 +17,9 @@ Il est ainsi possible via l'API de créer, supprimer, mettre à jour et récupé
 
 Ces fonctionnalités ne nécessitent pas d'être authentifié.
 
-#### 1.2. API /questions
+#### 1.2. API /api/sessions
 
-Cette seconde partie de l'API est accessible aux utilisateurs avec le rôle _USER_, et permet de gérer les questions des quizzs (**Kahoot**).
-Il est donc nécessaire pour toute requête vers les endpoints _/questions_ de fournir un token JWT (obtenu précédemment).
+Cette seconde partie de l'API permet de visualiser les sessions, ainsi que les réponses des utilisateurs aux sessions et les résultats finaux.
 
 ### 2. Logging des requêtes HTTP
 
@@ -81,7 +80,7 @@ En ligne de commande :
 #### 2.1. Lancer le conteneur Docker
 
 ```bash
-docker run -p 8080:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:latest start-dev
+sudo docker run -p 8080:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:latest start-dev
 ```
 
 #### 2.2. Importer la configuration
@@ -91,16 +90,20 @@ Une fois le serveur lancé sur le port 8080, accéder à l'[interface](localhost
 * Connectez vous avec les identifiants _admin_:_admin_.
 * Cliquez en haut à gauche sur le sélecteur puis _Create realm_
 * Chargez le fichier : [keycloack/realm-export.json](keycloack/realm-export.json)
-* Générez un nouveau secret pour le client dans _Clients > Credentials_:
+* Dans _Clients_, sélectionnez _kahootspringbootapp_
+* Générez un nouveau secret pour le client dans _Credentials_ puis notez le quelque part, nous en aurons besoin par la suite:
+* 
 ![img_7.png](img_7.png)
 
 #### 2.3. Créer un utilisateur
-Une fois la configuration terminée, il faut créer un utilisateur. Dans l'onglet _Users_, ajoutez un nouvel utilisateur au groupe **USERS** avec les informations suivantes :
+Une fois la configuration terminée, il faut créer un utilisateur. Dans l'onglet _Users_, ajoutez un nouvel utilisateur au groupe **ADMINS** avec les informations suivantes :
+
 ![img_5.png](img_5.png)
 
 Le nouvel utilisateur doit maintenant apparaître dans l'onglet _Users_.
 
-Il faut maintenant lui créer un mot de passe dans l'onglet _User > User details > Credentials_
+Il faut maintenant lui créer un mot de passe dans l'onglet _User > User details > Credentials_.
+
 ![img_6.png](img_6.png)
 
 #### 2.4. Générer le token d'authentification à l'API
@@ -126,13 +129,19 @@ Une fois l'application démarrée, vous pouvez accéder à votre API via votre n
 
 Vous pouvez également accéder au swagger API (format openapi) : [localhost:8082/api/swagger](http://localhost:8082/api/swagger) ou un outil comme [Postman](https://www.postman.com/). Par exemple :
 
+### 6. Testez !!
+
+Le détail des tests : [TESTS.md](TESTS.md)
+
 ## Structure du projet
 
 ### 1. Diagramme de classes du domaine entités
+
 ![img_8.png](img_8.png)
 
 ### 2. Sources
 ```bash
+src/main/java/
 src/main/java/
 └── com
     ├── aspects
@@ -161,7 +170,6 @@ src/main/java/
     │   ├── post
     │   │   └── UserPostDTO.java
     │   ├── QuestionDTO.java
-    │   ├── QuestionType.java
     │   ├── SessionDTO.java
     │   ├── ShortAnswerQuestionDTO.java
     │   └── UserAnswerDTO.java
@@ -170,7 +178,7 @@ src/main/java/
     ├── KahootSpringApplication.java
     ├── mapper
     │   └── MapStructMapper.java
-    ├── services
+    ├── repositories
     │   ├── IKahootRepository.java
     │   ├── IOrganizerRepository.java
     │   ├── IQCMAnswerRepository.java
@@ -178,9 +186,10 @@ src/main/java/
     │   ├── ISessionRepository.java
     │   ├── IUserAnswerRepository.java
     │   └── IUserRepository.java
+    ├── services
+    │   ├── SessionService.java
+    │   └── UserService.java
     └── web
-        ├── KahootController.java
-        ├── QuestionController.java
         ├── ResourceNotFoundAdvice.java
         ├── SessionController.java
         ├── UserController.java

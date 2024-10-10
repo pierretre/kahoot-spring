@@ -1,4 +1,4 @@
-package com.services;
+package com.repositories;
 
 import jakarta.transaction.Transactional;
 import com.domain.Session;
@@ -14,7 +14,7 @@ import java.util.List;
 public interface ISessionRepository extends JpaRepository<Session, Long> {
 
     @Query("select u from User u join u.session s where s.id = :session_id order by u.score DESC")
-    List<User> listUsersScoresForSessionById(@Param("session_id") long id);
+    List<User> getUsersOrderedByScoreForSessionById(@Param("session_id") long id);
 
     @Query("select ua from UserAnswer ua join ua.user u join u.session s where s.id = :session_id")
     List<UserAnswer> getUserAnswersForSessionById(@Param("session_id") long id);

@@ -1,84 +1,80 @@
 package com.web;
 
-import com.domain.Session;
-import com.domain.User;
 import com.dto.get.UserGetDTO;
 import com.dto.post.UserPostDTO;
-import com.exceptions.ResourceNotFoundException;
-import com.mapper.MapStructMapper;
-import com.services.ISessionRepository;
-import com.services.IUserAnswerRepository;
-import com.services.IUserRepository;
+import com.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
+@RequestMapping("/api/users")
+@Tag(name = "Users", description = "API to manage users")
 public class UserController {
 
     @Autowired
-    private IUserRepository userRepository;
-    @Autowired
-    private ISessionRepository sessionRepository;
-    @Autowired
-    private IUserAnswerRepository userAnswerRepository;
+    UserService userService;
 
-    MapStructMapper mapstructMapper = MapStructMapper.INSTANCE;
-
-    @GetMapping("/users")
+    /**
+     * Get all users.
+     *
+     * @return A list of UserGetDTO representing all users.
+     */
+    @Operation(summary = "Get all users", description = "Retrieve a list of all users stored in the database.")
+    @GetMapping("")
     public Iterable<UserGetDTO> all() {
-        return userRepository.findAll().stream().map(u -> mapstructMapper.userToUserDTO(u)).collect(Collectors.toList());
+        return userService.getAll();
     }
 
-    @GetMapping("/users/{id}")
+    /**
+     * Get a specific user by their ID.
+     *
+     * @param id The ID of the user to retrieve.
+     * @return The UserGetDTO of the requested user.
+     */
+    @Operation(summary = "Get a user by ID", description = "Retrieve a specific user by providing their ID.")
+    @GetMapping("/{id}")
     public UserGetDTO one(@PathVariable("id") final Long id) {
-        return mapstructMapper
-                .userToUserDTO(userRepository.findById(id)
-                .orElseThrow(()-> new ResourceNotFoundException(User.class, id)));
+        return userService.get(id);
     }
 
-    @DeleteMapping("/users/{id}")
+    /**
+     * Delete a specific user by their ID.
+     *
+     * @param id The ID of the user to delete.
+     */
+    @Operation(summary = "Delete a user", description = "Delete a user by their ID.")
+    @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable("id") final Long id) {
-        userRepository.findById(id).map(user -> {
-            userAnswerRepository.deleteUserAnswerByUser_Id(id);
-            userRepository.delete(user);
-            return user;
-        }).orElseThrow(()-> new ResourceNotFoundException(User.class, id));
+        userService.delete(id);
     }
 
-    @PostMapping(value = "/users", consumes = "application/json")
+    /**
+     * Add a new user. This action requires admin privileges.
+     *
+     * @param newUser The data of the new user to create.
+     * @return The created user's details in UserGetDTO format.
+     */
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Add a new user", description = "Create a new user. Admin privileges are required for this action.")
+    @PostMapping(value = "", consumes = "application/json")
     public UserGetDTO addUser(@RequestBody UserPostDTO newUser) {
-        return sessionRepository.findById(newUser.getSessionId()).map(session -> {
-            User user = mapstructMapper.userDTOToUser(newUser);
-                user.setSession(session);
-                ArrayList<User> guests = new ArrayList<>(session.getGuests());
-                guests.add(user);
-                session.setGuests(guests);
-                sessionRepository.save(session);
-                userRepository.save(user);
-                return mapstructMapper.userToUserDTO(user);
-        }).orElseThrow(()-> new ResourceNotFoundException(User.class, newUser.getSessionId()));
+        return userService.post(newUser);
     }
 
-    @PutMapping(value = "/users/{id}", consumes = "application/json")
+    /**
+     * Update an existing user. This action requires admin privileges.
+     *
+     * @param newUserDto The updated data for the user.
+     * @param id         The ID of the user to update.
+     * @return The updated user's details in UserGetDTO format.
+     */
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Update a user", description = "Update the details of an existing user. Admin privileges are required for this action.")
+    @PutMapping(value = "/{id}", consumes = "application/json")
     public UserGetDTO updateUser(@RequestBody UserPostDTO newUserDto, @PathVariable Long id) {
-        return userRepository.findById(id).map(user -> sessionRepository.findById(newUserDto.getSessionId()).map(session -> {
-            User newUser = mapstructMapper.userDTOToUser(newUserDto);
-
-            user.setSession(session);
-            user.setUsername(newUser.getUsername());
-            user.setScore(newUser.getScore());
-
-            ArrayList<User> guests = new ArrayList<>(session.getGuests());
-            guests.remove(user);
-            guests.add(user);
-            session.setGuests(guests);
-            sessionRepository.save(session);
-            userRepository.save(user);
-            return mapstructMapper.userToUserDTO(user);
-        }).orElseThrow(() -> new ResourceNotFoundException(Session.class, id))).orElseThrow(()-> new ResourceNotFoundException(User.class, id));
+        return userService.put(id, newUserDto);
     }
 }

@@ -11,5 +11,4 @@ public class QuestionDTO {
 
     long id;
     String question;
-    QuestionType type;
 }

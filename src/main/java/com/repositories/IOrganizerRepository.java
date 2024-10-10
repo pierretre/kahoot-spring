@@ -1,4 +1,4 @@
-package com.services;
+package com.repositories;
 
 import com.domain.Organizer;
 import jakarta.transaction.Transactional;

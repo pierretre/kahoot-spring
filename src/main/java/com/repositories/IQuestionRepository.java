@@ -1,4 +1,4 @@
-package com.services;
+package com.repositories;
 
 import jakarta.transaction.Transactional;
 import com.domain.Question;
