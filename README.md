@@ -90,10 +90,6 @@ Une fois le serveur lancé sur le port 8080, accéder à l'[interface](localhost
 * Connectez vous avec les identifiants _admin_:_admin_.
 * Cliquez en haut à gauche sur le sélecteur puis _Create realm_
 * Chargez le fichier : [keycloack/realm-export.json](keycloack/realm-export.json)
-* Dans _Clients_, sélectionnez _kahootspringbootapp_
-* Générez un nouveau secret pour le client dans _Credentials_ puis notez le quelque part, nous en aurons besoin par la suite:
-* 
-![img_7.png](img_7.png)
 
 #### 2.3. Créer un utilisateur
 Une fois la configuration terminée, il faut créer un utilisateur. Dans l'onglet _Users_, ajoutez un nouvel utilisateur au groupe **ADMINS** avec les informations suivantes :
@@ -112,7 +108,7 @@ Les requêtes API notamment sur les _questions_ [localhost:8082/questions](local
 Pour générer un token à partir de l'utilisateur _user1_:_123456_ précédemment créé en mettant bien à jour le _client_secret_ avec celui généré:
 
 ```bash
-export TOKEN=$(curl --location 'http://localhost:8080/realms/kahootrealm/protocol/openid-connect/token' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'username=user1' --data-urlencode 'password=123456' --data-urlencode 'grant_type=password' --data-urlencode 'client_id=kahootspringbootapp' --data-urlencode 'client_secret=<client_secret>' --data-urlencode 'scope=openid'| jq -r '.access_token')
+export TOKEN=$(curl --location 'http://localhost:8080/realms/kahootrealm/protocol/openid-connect/token' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'username=user1' --data-urlencode 'password=123456' --data-urlencode 'grant_type=password' --data-urlencode 'client_id=kahootspringbootapp' --data-urlencode 'client_secret=topsecret' --data-urlencode 'scope=openid'| jq -r '.access_token')
 ```
 
 ### 3. Via Maven (Ou directement via l'interface intellij)

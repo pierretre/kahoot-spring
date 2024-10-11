@@ -2,6 +2,7 @@ package com.web;
 
 import com.dto.SessionDTO;
 import com.dto.UserAnswerDTO;
+import com.dto.get.UserGetDTO;
 import com.services.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -78,8 +79,8 @@ public class SessionController {
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Get users ordered by score for a session", description = "Retrieve all users associated with a specific session, ordered by their score in descending order. Admin privileges are required.")
     @GetMapping("/{id}/scores")
-    public List<UserAnswerDTO> getUsersOrderedByScoreForSession(@PathVariable long id) {
-        return sessionService.getUserAnswers(id);
+    public List<UserGetDTO> getUsersOrderedByScoreForSession(@PathVariable long id) {
+        return sessionService.getUsersScores(id);
     }
 
     /**

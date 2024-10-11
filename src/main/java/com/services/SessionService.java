@@ -67,7 +67,11 @@ public class SessionService {
 
     public SessionDTO generateSession() {
 
-        Kahoot kahoot = new Kahoot();
+        // Generate the organizer :
+        Organizer creator = new Organizer("bob@mail.com", "bob");
+        organizerRepository.save(creator);
+
+        Kahoot kahoot = new Kahoot(creator, new ArrayList<>());
         kahootRepository.save(kahoot);
 
         // Generate the questions :
@@ -92,13 +96,6 @@ public class SessionService {
         questionRepository.save(q2);
 
         kahoot.setQuestions(new ArrayList<>(Arrays.asList(q1, q2)));
-
-        // Generate the organizer :
-        Organizer creator = new Organizer("bob@mail.com", "bob");
-        organizerRepository.save(creator);
-        kahoot.setCreator(creator);
-
-        kahoot.setCreationDate(LocalDateTime.now());
 
         kahootRepository.save(kahoot);
 

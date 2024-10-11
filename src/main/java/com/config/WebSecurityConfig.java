@@ -29,7 +29,6 @@ public class WebSecurityConfig {
                         registry.requestMatchers("/").permitAll()
                                 .requestMatchers("/index").hasRole("USER")
                                 .requestMatchers("/admin").hasRole("ADMIN")
-                                .requestMatchers("/questions").hasRole("USER")
                                 .anyRequest().permitAll();
                     } catch (Exception e) {
                         e.printStackTrace();

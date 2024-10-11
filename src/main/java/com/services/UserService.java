@@ -54,7 +54,7 @@ public class UserService {
             sessionRepository.save(session);
             userRepository.save(user);
             return mapper.userToUserDTO(user);
-        }).orElseThrow(() -> new ResourceNotFoundException(User.class, userPostDTO.getSessionId()));
+        }).orElseThrow(() -> new ResourceNotFoundException(Session.class, userPostDTO.getSessionId()));
     }
 
     public UserGetDTO put(long id, UserPostDTO userPostDTO) {

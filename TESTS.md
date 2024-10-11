@@ -1,3 +1,8 @@
+**Rappel :**
+Pour générer un token :
+```bash
+export TOKEN=$(curl --location 'http://localhost:8080/realms/kahootrealm/protocol/openid-connect/token' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'username=user1' --data-urlencode 'password=123456' --data-urlencode 'grant_type=password' --data-urlencode 'client_id=kahootspringbootapp' --data-urlencode 'client_secret=topsecret' --data-urlencode 'scope=openid'| jq -r '.access_token')
+```
 ### 1. Tests cURL pour UserController
 
 #### a) Obtenir tous les utilisateurs
@@ -31,7 +36,8 @@ curl -o - -i -X POST http://localhost:8082/api/users \
 -H "Authorization: Bearer $TOKEN" \
 -d '{
     "username": "nouvelutilisateur",
-    "sessionId": 123
+    "sessionId": 123,
+    "score": 0
 }'
 ```
 
@@ -45,7 +51,8 @@ curl -o - -i -X PUT http://localhost:8082/api/users/{id} \
 -H "Authorization: Bearer $TOKEN" \
 -d '{
     "username": "utilisateurmodifié",
-    "sessionId": 123
+    "sessionId": 123,
+    "score": 1
 }'
 ```
 
