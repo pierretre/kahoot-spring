@@ -37,8 +37,8 @@ Avant de commencer, assurez-vous d'avoir installé les éléments suivants sur v
 ### 1. Cloner le dépôt
 
 ```bash
-git clone https://github.com/votre-utilisateur/votre-projet.git
-cd votre-projet
+git clone https://github.com/pierretre/kahoot-spring.git
+cd kahoot-spring
 ```
 ### 2. Installation des dépendances
 

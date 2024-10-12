@@ -3,6 +3,9 @@ package com.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @RequiredArgsConstructor
 @NoArgsConstructor
@@ -29,4 +32,9 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "session_id")
     private Session session;
+
+    @Getter
+    @Setter
+    @OneToMany(mappedBy = "user", cascade=CascadeType.REMOVE)
+    private List<UserAnswer> userAnswers = new ArrayList<>();
 }

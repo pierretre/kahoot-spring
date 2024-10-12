@@ -10,7 +10,6 @@ import com.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -128,10 +127,10 @@ public class SessionService {
         userAnswerRepository.save(sua3);
         userAnswerRepository.save(sua4);
 
-        MultipleChoiceUserAnswer qcma1 = new MultipleChoiceUserAnswer(qa1, false, u1);
-        MultipleChoiceUserAnswer qcma2 = new MultipleChoiceUserAnswer(goodAnswer, true, u2);
-        MultipleChoiceUserAnswer qcma3 = new MultipleChoiceUserAnswer(qa1, false, u3);
-        MultipleChoiceUserAnswer qcma4 = new MultipleChoiceUserAnswer(qa3, false, u4);
+        MultipleChoiceQuestionUserAnswer qcma1 = new MultipleChoiceQuestionUserAnswer(qa1, false, u1);
+        MultipleChoiceQuestionUserAnswer qcma2 = new MultipleChoiceQuestionUserAnswer(goodAnswer, true, u2);
+        MultipleChoiceQuestionUserAnswer qcma3 = new MultipleChoiceQuestionUserAnswer(qa1, false, u3);
+        MultipleChoiceQuestionUserAnswer qcma4 = new MultipleChoiceQuestionUserAnswer(qa3, false, u4);
 
         userAnswerRepository.save(qcma1);
         userAnswerRepository.save(qcma2);

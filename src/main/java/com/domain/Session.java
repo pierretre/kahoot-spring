@@ -30,6 +30,6 @@ public class Session {
     @NonNull
     @Getter
     @Setter
-    @OneToMany(mappedBy = "session", fetch = FetchType.LAZY, cascade=CascadeType.REMOVE)
+    @OneToMany(mappedBy = "session", cascade=CascadeType.REMOVE)
     private List<User> guests;
 }
